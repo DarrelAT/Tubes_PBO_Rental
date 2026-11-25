@@ -111,10 +111,15 @@ public class UserRepository implements BaseRepository<User> {
         String nama = rs.getString("nama_lengkap");
         String role = rs.getString("role");
 
-        switch (role) {
+        if (role == null){
+            role = "CUSTOMER";
+        }
+
+        switch (role.trim().toUpperCase()) {
             case "ADMIN":
                 return new Admin(id, username, password, nama);
             case "STAFF":
+            case "EMPLOYEE" :
                 return new Staff(id, username, password, nama);
             default:
                 return new Customer(id, username, password, nama);
