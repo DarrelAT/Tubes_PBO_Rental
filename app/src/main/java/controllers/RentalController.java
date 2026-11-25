@@ -1,11 +1,9 @@
-                package controllers;
-
+package controllers;
 import exceptions.VehicleNotAvailableException;
-import models.Rentable;
+import models.Rentalable;
 import models.User;
 import models.Vehicle;
 import repository.VehicleRepository;
-
 import java.util.List;
 
 public class RentalController {
@@ -15,31 +13,21 @@ public class RentalController {
         this.vehicleRepo = new VehicleRepository();
     }
 
-    public List<Vehicle> getAllVehicles() {
-        return vehicleRepo.getAll();
-    }
+    public List<Vehicle> getAllVehicles() { return vehicleRepo.getAll(); }
 
     public double processRental(int vehicleId, int days, User user) throws VehicleNotAvailableException {
         Vehicle vehicle = vehicleRepo.getById(vehicleId);
-
-        if (vehicle == null) {
-            throw new IllegalArgumentException("Kendaraan tidak ditemukan.");
-        }
-
+        if (vehicle == null) throw new IllegalArgumentException("Kendaraan tidak ditemukan.");
         if (!"AVAILABLE".equalsIgnoreCase(vehicle.getStatus())) {
-            throw new VehicleNotAvailableException("Kendaraan " + vehicle.getBrand() + " " + vehicle.getModel() + " sedang tidak tersedia!");
+            throw new VehicleNotAvailableException("Kendaraan sedang tidak tersedia!");
         }
 
-        // Hitung total via Interface Rentable
         double totalCost = 0;
-        if (vehicle instanceof Rentable) {
-            totalCost = ((Rentable) vehicle).calculateRentCost(days);
-            ((Rentable) vehicle).processRental();
+        if (vehicle instanceof Rentalable) {
+            totalCost = ((Rentalable) vehicle).calculateRentCost(days);
+            ((Rentalable) vehicle).processRental();
         }
-
-        // Update status di PostgreSQL
         vehicleRepo.update(vehicle);
-
         return totalCost;
     }
 }

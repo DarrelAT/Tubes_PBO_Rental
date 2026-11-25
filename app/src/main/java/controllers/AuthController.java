@@ -1,7 +1,6 @@
 package controllers;
-
 import models.User;
-import repository.UserRepository;
+import repository.UserRepository; // Pastikan UserRepository sudah dibuat
 
 public class AuthController {
     private UserRepository userRepo;
@@ -20,11 +19,6 @@ public class AuthController {
         return false;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public void logout() {
-        this.currentUser = null;
-    }
+    public User getCurrentUser() { return currentUser; }
+    public void logout() { this.currentUser = null; }
 }
